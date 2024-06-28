@@ -5,8 +5,6 @@ import axios from "axios";
 import Loader from "../Components/Loader.js";
 import ProductCard from "../Components/ProductCard.js";
 function Home() {
-  const url =
-    "https://667e8eb6f2cb59c38dc62b18.mockapi.io/kocData?page=1&limit=10";
   const [products, setProducts] = useState({
     loading: true,
     data: null,
@@ -14,15 +12,20 @@ function Home() {
   });
 
   let content = null;
+  const url =
+    "https://667e8eb6f2cb59c38dc62b18.mockapi.io/kocData?page=1&limit=10";
+
+  const fetchProducts = async () => {
+    try {
+      const res = await axios.get(url);
+      setProducts({ loading: false, data: res.data, error: false });
+    } catch (err) {
+      setProducts({ loading: false, data: null, error: true });
+    }
+  };
+
   useEffect(() => {
-    axios
-      .get(url)
-      .then((response) => {
-        setProducts({ loading: false, data: response.data, error: false });
-      })
-      .catch(() => {
-        setProducts({ loading: false, data: null, error: true });
-      });
+    fetchProducts();
   }, [url]);
 
   if (products.loading) {
